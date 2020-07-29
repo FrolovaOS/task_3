@@ -26,11 +26,21 @@ public class App
         String mass = "";
 
         System.out.println("Введите сообщение для отправки ");
+
         while(!mass.equals("Выход")) {
             mass = in.nextLine();
+//            try {
+//                Thread.currentThread().sleep(3000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             producer.send(new ProducerRecord<String, String>(nameTopic, mass));
-            producer.flush();
+
+
+         //   producer.flush();
+
             ConsumerRecords<String, String> records = consumer.poll(10000);
+
             for (ConsumerRecord<String, String> record : records)
             {
                 System.out.println("offset = " +  record.offset() + ", value = " + record.value());
