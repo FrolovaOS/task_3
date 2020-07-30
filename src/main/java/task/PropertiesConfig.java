@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.TopicConfig;
 
 
 import java.util.Collections;
@@ -18,12 +19,12 @@ public class PropertiesConfig {
     private final static String GROUP_ID = "testGroup02";
     private final static String CLIENT_ID = "client1";
     private final static String ENABLE_AUTO_COMMIT = "true";
-    private final static String AUTO_COMMIT_INTERVAL_MS = "1000";
+    private final static String AUTO_COMMIT_INTERVAL_MS = "100";
     private final static String SESSION_TIMEOUT_MS = "30000";
     private final static String KEY_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
     private final static String VALUE_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
-    private final static String ACKS = "-1";
-    private final static int RETRIES = 0;
+    private final static String ACKS = "all";
+    private final static int RETRIES = 10;
     private final static int BATCH_SIZE = 16384;
     private final static int LINGER_MS  = 1;
     private final static int BUFFER_MEMORY = 33554432;
@@ -42,8 +43,8 @@ public class PropertiesConfig {
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, SESSION_TIMEOUT_MS);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER);
-        props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG,5);
-        props.put(ConsumerConfig.RETRY_BACKOFF_MS_CONFIG,5);
+
+
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
 
         return consumer;
@@ -61,6 +62,7 @@ public class PropertiesConfig {
         props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, BUFFER_MEMORY);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, KEY_SERIALIZER);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, VALUE_SERIALIZER);
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,true);
 
         Producer<String, String> producer = new KafkaProducer(props);
 
@@ -69,12 +71,16 @@ public class PropertiesConfig {
 
     public static void createTopic(String topicName) {
         Properties config = new Properties();
+
+
         config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVER);
 
         Map<String, String> configs = new HashMap<>();
+
+
         int partitions = 1;
         int replication = 1;
-        KafkaAdminClient.create(config).createTopics(Collections.singletonList(new NewTopic("topic", partitions, (short) replication).configs(configs)));
+        KafkaAdminClient.create(config).createTopics(Collections.singletonList(new NewTopic(topicName, partitions, (short) replication).configs(configs)));
 
     }
 }
