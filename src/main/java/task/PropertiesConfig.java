@@ -30,7 +30,7 @@ public class PropertiesConfig {
     private final static int BUFFER_MEMORY = 33554432;
     private final static String KEY_SERIALIZER  = "org.apache.kafka.common.serialization.StringSerializer";
     private final static String VALUE_SERIALIZER =  "org.apache.kafka.common.serialization.StringSerializer";
-
+    private final static String AUTO_OFFSET_RESET =  "earliest";
 
     public static KafkaConsumer<String, String> initConsumer() {
         Properties props = new Properties();
@@ -43,8 +43,7 @@ public class PropertiesConfig {
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, SESSION_TIMEOUT_MS);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER);
-
-
+        props.put( ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,AUTO_OFFSET_RESET);
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
 
         return consumer;
